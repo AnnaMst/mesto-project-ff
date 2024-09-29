@@ -36,16 +36,4 @@ const deleteCard = (card) => {
     card.remove()
 }
 
-//функция клика по изображению
-const increaseImage = (image, text) => {
-    const popupImage = document.querySelector('.popup__image');
-    const popupImageText = document.querySelector('.popup__caption');
-    const popuptypeImage = document.querySelector('.popup_type_image')
-    popupImage.src = image.src;
-    popupImage.alt = image.alt;
-    popupImageText.textContent = text.textContent;
-
-    popuptypeImage.classList.add('popup_is-opened')
-}
-
-export {createCard, likeCard, deleteCard, increaseImage}
+export {createCard, likeCard, deleteCard }

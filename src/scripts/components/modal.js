@@ -1,50 +1,31 @@
+//закрытие попапа с помощью Esc
+const closeModalEscape = (evt) => {
+    if (evt.key === 'Escape') {
+        const openedPopup = document.querySelector('.popup_is-opened')
+        closeModal(openedPopup)
+    }
+}
+
 // функция попап ОТРКЫТИЕ
-function openModal (element) {
+const openModal = (element) => {
     element.classList.add('popup_is-opened')
+    //вешаю обработчик для Esc
+    document.addEventListener('keydown', closeModalEscape)
+    
 }
 
 // функция попап ЗАКРЫТИЕ
-function closeModal (element) {
+const closeModal = (element) => {
     element.classList.remove('popup_is-opened')
-}
-
-// Обработчик «отправки» формы, хотя пока она никуда отправляться не будет
-const handleFormSubmit = (evt) => {
-    evt.preventDefault();
-    //формы
-    const editProfile = document.forms.editProfile;
-    //РАБОТА С ФОРМОЙ ЗАПОЛНЕНИЯ ФОРМЫ
-    const nameInput = editProfile.name;
-    const jobInput = editProfile.description;
-    //изменине значения плейсхолдера в редактировании имени и инфы о себе
-    const profileTitle = document.querySelector('.profile__title');
-    const profileDescription = document.querySelector('.profile__description');
-    nameInput.placeholder = profileTitle.textContent;
-    jobInput.placeholder = profileDescription.textContent;
-    // Получите значение полей jobInput и nameInput из свойства value
-    const userName = nameInput.value;
-    const userJob = jobInput.value;
-    // Вставьте новые значения с помощью textContent
-    profileTitle.textContent = userName;
-    profileDescription.textContent = userJob;
-
-    closeModal(document.querySelector('.popup_is-opened'));
-    editProfile.reset();
+    //снимаю обработчки для Esc
+    document.removeEventListener('keydown', closeModalEscape)
 }
 
 //закрытие попапа кликом вне элемента
 const closeModalOverlay = (evt) => {
-    if (evt.target === document.querySelector('.popup_is-opened')) {
-        closeModal(document.querySelector('.popup_is-opened'))
+    if (!evt.target.classList.contains('.popup')) {
+        closeModal(evt.target)
     }
 }
 
-//закрытие попапа с помощью Esc
-const closeModalEscape = (evt) => {
-    if (evt.key === 'Escape') {
-        closeModal(element)
-    }
-    evt.target.removeEventListener('keydown', closeModalEscape)
-}
-
-export { openModal, closeModal, handleFormSubmit, closeModalOverlay, closeModalEscape }
+export { openModal, closeModal, closeModalOverlay, closeModalEscape }
