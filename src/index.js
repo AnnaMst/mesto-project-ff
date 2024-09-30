@@ -42,9 +42,6 @@ const handleProfileFormSubmit = (evt) => {
     // Вставьте новые значения с помощью textContent
     profileTitle.textContent = userName;
     profileDescription.textContent = userJob;
-    //изменине значения плейсхолдера в редактировании имени и инфы о себе
-    nameInput.placeholder = profileTitle.textContent;
-    jobInput.placeholder = profileDescription.textContent;
 
     closeModal(document.querySelector('.popup_is-opened'));
     editProfileForm.reset();
