@@ -1,6 +1,6 @@
 import '/src/pages/index.css';
 
-import { openModal, closeModal, closeModalOverlay, closeModalEscape } from '/src/scripts/components/modal.js';
+import { openModal, closeModal, closeModalOverlay } from '/src/scripts/components/modal.js';
 import {createCard, likeCard, deleteCard} from '/src/scripts/components/card.js';
 import {initialCards} from '/src/scripts/cards.js'
 
@@ -21,23 +21,30 @@ const profileAddButton = document.querySelector('.profile__add-button');
 //формы
 const newPlaceForm = document.forms.newPlace;
 const editProfileForm = document.forms.editProfile
+const nameInput = editProfileForm.name;
+const jobInput = editProfileForm.description;
+
+//открытие попапа формы изменения профиля
+const openPopupProfileForm = ()=> {
+    //изменине значения плейсхолдера в редактировании имени и инфы о себе
+    nameInput.placeholder = profileTitle.textContent;
+    jobInput.placeholder = profileDescription.textContent;
+
+    openModal(popupProfile)
+}
 
 // Обработчик «отправки» формы, хотя пока она никуда отправляться не будет
 const handleProfileFormSubmit = (evt) => {
     evt.preventDefault();
-    //формы
-    //РАБОТА С ФОРМОЙ ЗАПОЛНЕНИЯ ФОРМЫ
-    const nameInput = editProfileForm.name;
-    const jobInput = editProfileForm.description;
-    //изменине значения плейсхолдера в редактировании имени и инфы о себе
-    nameInput.placeholder = profileTitle.textContent;
-    jobInput.placeholder = profileDescription.textContent;
     // Получите значение полей jobInput и nameInput из свойства value
     const userName = nameInput.value;
     const userJob = jobInput.value;
     // Вставьте новые значения с помощью textContent
     profileTitle.textContent = userName;
     profileDescription.textContent = userJob;
+    //изменине значения плейсхолдера в редактировании имени и инфы о себе
+    nameInput.placeholder = profileTitle.textContent;
+    jobInput.placeholder = profileDescription.textContent;
 
     closeModal(document.querySelector('.popup_is-opened'));
     editProfileForm.reset();
@@ -71,10 +78,6 @@ initialCards.forEach ((cardElement) => {
     placesList.append(createCard(cardElement, deleteCard, likeCard, increaseImage))
 })
 
-// открытие попапов кликом по кнопкам
-editButton.addEventListener('click', () => openModal(popupProfile));
-profileAddButton.addEventListener('click', () => openModal(popupNewCard));
-
 // Прикрепляем обработчик к форме: он будет следить за событием “submit” - «отправка»
 editProfileForm.addEventListener('submit', handleProfileFormSubmit); 
 
@@ -89,3 +92,7 @@ popups.forEach((element) => {
     //закрытие попапа кликом вне элемента
     element.addEventListener('click', closeModalOverlay)
 })
+
+// открытие попапов кликом по кнопкам
+editButton.addEventListener('click', openPopupProfileForm);
+profileAddButton.addEventListener('click', () => openModal(popupNewCard));

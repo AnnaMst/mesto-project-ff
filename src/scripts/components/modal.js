@@ -28,4 +28,4 @@ const closeModalOverlay = (evt) => {
     }
 }
 
-export { openModal, closeModal, closeModalOverlay, closeModalEscape }
+export { openModal, closeModal, closeModalOverlay }
