@@ -25,10 +25,10 @@ const nameInput = editProfileForm.name;
 const jobInput = editProfileForm.description;
 
 //открытие попапа формы изменения профиля
-const openPopupProfileForm = ()=> {
+const openPopupProfileForm = () => {
     //изменине значения плейсхолдера в редактировании имени и инфы о себе
-    nameInput.placeholder = profileTitle.textContent;
-    jobInput.placeholder = profileDescription.textContent;
+    nameInput.value = profileTitle.textContent;
+    jobInput.value = profileDescription.textContent;
 
     openModal(popupProfile)
 }
@@ -43,7 +43,7 @@ const handleProfileFormSubmit = (evt) => {
     profileTitle.textContent = userName;
     profileDescription.textContent = userJob;
 
-    closeModal(document.querySelector('.popup_is-opened'));
+    closeModal(popupProfile);
     editProfileForm.reset();
 }
 
@@ -51,8 +51,8 @@ const handleProfileFormSubmit = (evt) => {
 const handleCardFormSubmit = (evt) => {
     evt.preventDefault();
     const newPlaceCard = {
-        name: newPlace.name.value,
-        link: newPlace.link.value
+        name: newPlaceForm.name.value,
+        link: newPlaceForm.link.value
     }
     
     placesList.prepend(createCard(newPlaceCard, deleteCard, likeCard, increaseImage));
@@ -79,7 +79,7 @@ initialCards.forEach ((cardElement) => {
 editProfileForm.addEventListener('submit', handleProfileFormSubmit); 
 
 //слушатель добавления новой карточки через форму
-newPlace.addEventListener('submit', handleCardFormSubmit);
+newPlaceForm.addEventListener('submit', handleCardFormSubmit);
 
 //перебор массива popup и процесс закрытия попапов
 popups.forEach((element) => {

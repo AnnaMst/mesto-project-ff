@@ -23,7 +23,7 @@ const closeModal = (element) => {
 
 //закрытие попапа кликом вне элемента
 const closeModalOverlay = (evt) => {
-    if (!evt.target.classList.contains('.popup')) {
+    if (evt.target.classList.contains('popup')) {
         closeModal(evt.target)
     }
 }
