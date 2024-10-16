@@ -3,6 +3,7 @@ import '/src/pages/index.css';
 import { openModal, closeModal, closeModalOverlay } from '/src/scripts/components/modal.js';
 import {createCard, likeCard, deleteCard} from '/src/scripts/components/card.js';
 import {initialCards} from '/src/scripts/cards.js'
+import {enableValidation} from '../src/scripts/components/validation'
 
 // @todo: DOM узлы
 const placesList = document.querySelector('.places__list');
@@ -23,14 +24,25 @@ const newPlaceForm = document.forms.newPlace;
 const editProfileForm = document.forms.editProfile
 const nameInput = editProfileForm.name;
 const jobInput = editProfileForm.description;
+//объект с настройками валидации
+const validationConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible',
+}
 
 //открытие попапа формы изменения профиля
 const openPopupProfileForm = () => {
     //изменине значения плейсхолдера в редактировании имени и инфы о себе
     nameInput.value = profileTitle.textContent;
     jobInput.value = profileDescription.textContent;
-
     openModal(popupProfile)
+    // включение валидации вызовом enableValidation
+    // все настройки передаются при вызове
+    enableValidation(validationConfig);
 }
 
 // Обработчик «отправки» формы, хотя пока она никуда отправляться не будет

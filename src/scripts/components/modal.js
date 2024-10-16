@@ -11,7 +11,6 @@ const openModal = (element) => {
     element.classList.add('popup_is-opened')
     //вешаю обработчик для Esc
     document.addEventListener('keydown', closeModalEscape)
-    
 }
 
 // функция попап ЗАКРЫТИЕ
