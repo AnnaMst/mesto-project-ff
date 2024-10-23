@@ -18,17 +18,17 @@ const popupTypeImage = document.querySelector('.popup_type_image');
 const avatarChangePopup = document.querySelector('.popup_change_avatar');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
-const profileImage = document.querySelector('.profile__image')
+const profileImage = document.querySelector('.profile__image');
 //кнопки
 const editButton = document.querySelector('.profile__edit-button');
 const profileAddButton = document.querySelector('.profile__add-button');
+const buttons = document.querySelectorAll('#button');
 //формы
 const newPlaceForm = document.forms.newPlace;
 const editProfileForm = document.forms.editProfile
 const nameInput = editProfileForm.name;
 const jobInput = editProfileForm.description;
 const profileImageForm = document.forms.profileImage;
-const popupButton = document.forms.popupButton;
 //объект с настройками валидации
 const validationConfig = {
     formSelector: '.popup__form',
@@ -39,12 +39,14 @@ const validationConfig = {
     errorClass: 'popup__error_visible',
 }
 
+
 //загрузка
 function renderLoading (isLoading) {
     if (isLoading) {
-        popupButton.textContent = 'Загружается...'
+        buttons.forEach((buttonElement) => buttonElement.innerText = 'Загружается...')
     } else {
-        popupButton.textContent = ''
+        buttons.forEach((buttonElement) => buttonElement.innerText = 'Сохранить')
+        
     }
 }
 
@@ -63,7 +65,6 @@ const handleLikeCard = (cardLikeButton, id, cardLikeCounter) => {
     } else {
         putLike(id)
         .then (data => {
-            renderLoading(true)
             //отображение лайков карточки
             cardLikeCounter.textContent = data.likes.length
             likeCard(cardLikeButton)
@@ -100,14 +101,16 @@ const handleProfileFormSubmit = (evt) => {
     .then((data) => {
         profileTitle.textContent = data.name;
         profileDescription.textContent = data.about;
+
+        closeModal(popupProfile);
+        editProfileForm.reset();
     })
     .catch ((err) => {
         console.log(err);
     })
     .finally (() => renderLoading(false))
 
-    closeModal(popupProfile);
-    editProfileForm.reset();
+    
 }
 //функция клика по изображению
 const increaseImage = (image, text) => {
@@ -127,34 +130,35 @@ const params = {
     openModal: openModal,
     closeModal: closeModal,
     handleLikeCard: handleLikeCard,
-    increaseImage: increaseImage
+    increaseImage: increaseImage,
 }
 
 //функция добавления карточки в разметку через попап
 const handleCardFormSubmit = (evt) => {
     evt.preventDefault();
-    renderLoading(true)
     const newPlaceCard = {
         name: newPlaceForm.name.value,
         link: newPlaceForm.link.value
     }
 
+    renderLoading(true)
+
     postNewCard(newPlaceCard)
     .then((data) => {
-        console.log(data)
         placesList.prepend(createCard(
             data,
             params
         ));
     })
+    .then (() => {
+        clearValidation(newPlaceForm, validationConfig);
+        closeModal(popupNewCard)    
+        newPlaceForm.reset();
+    })
     .catch((err) => {
         console.log(err)
     })
     .finally (() => renderLoading(false))
-
-    clearValidation(newPlaceForm, validationConfig);
-    closeModal(popupNewCard)    
-    newPlaceForm.reset();
 }
 
 //вывожу инфу о профиле и все карточки
@@ -165,7 +169,7 @@ Promise.all([getUserName(), getInitialCards()])
     profileImage.style = `background-image: url("${data[0].avatar}")`
     return data[1].forEach ((cardElement) => {
         placesList.append(createCard(cardElement, params));
-    })
+    });
 })
 .catch ((err) => {
     console.log(err);
@@ -206,6 +210,7 @@ profileImageForm.addEventListener('submit', () => {
     .then (data => {
         profileImage.style = `background-image: url("${data.avatar}")`;
         closeModal(avatarChangePopup)
+        profileImageForm.reset();
     })
     .catch ((err) => {
         console.log(err);

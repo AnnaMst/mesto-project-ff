@@ -1,9 +1,5 @@
 const config = {
     baseUrl: 'https://nomoreparties.co/v1/wff-cohort-24/',
-    headers: {
-      authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-      'Content-Type': 'application/json'
-    }
 }
 
 //загрузка информации о пользователе с сервера
@@ -22,7 +18,7 @@ export const getUserName = () => {
     })
 } 
 
-//отправка изменений данных пор
+//отправка изменений данных профиля
 export const editUserProfile = (name, about) => {
     return fetch(`${config.baseUrl}/users/me`, {
         method:'PATCH',
@@ -81,6 +77,7 @@ export const postNewCard = ({name, link}) => {
     })
 }
 
+//ставим лайк
 export const putLike = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
@@ -97,6 +94,7 @@ export const putLike = (cardId) => {
     })
 }
 
+//удаляем лайк
 export const deleteLike = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
@@ -113,12 +111,12 @@ export const deleteLike = (cardId) => {
     })
 }
 
+//удаляем карточку
 export const deleteCard = (cardId) => {
     return fetch(`${config.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
         headers: {
             authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-            'Content-Type': 'application/json'
         },
     })
     .then(res => {
@@ -129,6 +127,7 @@ export const deleteCard = (cardId) => {
     })
 }
 
+//меняем аватар
 export const changeAvatar = (avatar) => {
     return fetch(`${config.baseUrl}/users/me/avatar `, {
         method: 'PATCH',

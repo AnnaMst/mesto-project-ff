@@ -3,4 +3,5 @@
     color: rgba(0, 0, 0, 1);
     background-color: white;
     opacity: 0.2;
+    pointer-events: none;
 }

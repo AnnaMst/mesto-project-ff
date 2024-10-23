@@ -16,6 +16,7 @@ export const createCard = (cardElement, params) => {
     const cardImage = card.querySelector('.card__image');
     const cardTitle = card.querySelector('.card__title');
     const cardLikeCounter = card.querySelector('.card__like-counter')
+    const cardDeleteButton = card.querySelector('.card__delete-button');
 
     //попробовать переделать функцию с распознаванием, 
     //является ли cardElement частью формы
@@ -43,31 +44,26 @@ export const createCard = (cardElement, params) => {
     cardImage.addEventListener('click', () => params.increaseImage(cardImage, cardTitle));
     
     //удалить карточку
-    const cardDeleteButton = card.querySelector('.card__delete-button');
-    function handleDeleteCard (ownerId, cardDeleteButton) {
+
+    function handleDeleteCard (cardElement, ownerId, cardDeleteButton) {
         if (cardElement.owner._id !== ownerId) {
             cardDeleteButton.remove()
         } else {
-            card.querySelector('.card__delete-button').addEventListener('click', () => {
-                params.openModal(document.querySelector('.popup_type_confirmation'));
-                document.querySelector('.popup__button-confirm').addEventListener('click', () => {
-                    params.deleteCard(cardElement._id)
-                    .then (res => {
-                        params.removeCard(card)
-                        params.closeModal(document.querySelector('.popup_type_confirmation'))
-                        console.log(res)
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                    })
+            cardDeleteButton.addEventListener('click', () => {
+                params.deleteCard(cardElement._id)
+                .then ((data) => {
+                    console.log(data)
+                    params.removeCard(card)
                 })
-            });
-        };
-        
+                .catch((err) => {
+                    console.log(err)
+                })
+            })
+        }
     }
-
-    handleDeleteCard(params.ownerId, cardDeleteButton)
+    handleDeleteCard(cardElement, params.ownerId, cardDeleteButton)
 
     return card;
+
 }
 

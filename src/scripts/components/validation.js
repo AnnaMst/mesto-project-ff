@@ -41,9 +41,9 @@ const hasInvalidInput = (inputList) => {
 //переключение кнопки
 const toggleButtonState = (inputList, buttonElement, validationConfig) => {
     if (hasInvalidInput(inputList)) {
-      buttonElement.classList.add(validationConfig.inactiveButtonClass)
+      buttonElement.classList.add(validationConfig.inactiveButtonClass);
     } else {
-      buttonElement.classList.remove(validationConfig.inactiveButtonClass)
+      buttonElement.classList.remove(validationConfig.inactiveButtonClass);
     }
 };
 
