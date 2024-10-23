@@ -1,3 +1,11 @@
 # Проектная работа Mesto
 
-https://github.com/AnnaMst/mesto-project-ff.git
+
+#Проект Mesto 
+https://annamst.github.io/mesto-project-ff/ - ссылка на опубликованную версию
+https://github.com/AnnaMst/mesto-project-ff.git - ссылка на репозиторий
+
+
+Небольшой проект подобный соцсети для выкладывания картинок, их обновления и отметок "нравится" другими пользователями.
+
+В планах доделать закрытие карточек через модальное окно.
