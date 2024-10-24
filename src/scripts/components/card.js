@@ -1,15 +1,54 @@
-// @todo: Функция удаления карточки
-export const removeCard = (card) => {
+import { deleteCard, deleteLike, putLike } from "./api.js"
+
+// @todo: Функция убирания карточки
+const removeCard = (card) => {
     card.remove()
 }
 
 //функция лайка карточки
-export const likeCard = (element) => {
+const likeCard = (element) => {
     element.classList.toggle('card__like-button_is-active')
 }
 
+//общая функция лайка
+export const handleLikeCard = (cardLikeButton, id, cardLikeCounter) => {
+    if (cardLikeButton.classList.contains('card__like-button_is-active')) {
+        deleteLike(id)
+        .then (data => {
+            //отображение лайков карточки
+            cardLikeCounter.textContent = data.likes.length
+            likeCard(cardLikeButton)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    } else {
+        putLike(id)
+        .then (data => {
+            //отображение лайков карточки
+            cardLikeCounter.textContent = data.likes.length
+            likeCard(cardLikeButton)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+}
+
+//функция удаления карточки
+export const handleDeleteCard = (cardElement, removeCard, card) => {
+    deleteCard(cardElement._id)
+.then ((data) => {
+    console.log(data)
+    removeCard(card)
+})
+.catch((err) => {
+    console.log(err)
+})
+}
+
 // @todo: Функция создания карточки
-export const createCard = (cardElement, params) => {
+export const createCard = (cardElement, params, ownerId) => {
     // @todo: Темплейт карточки
     const cardTemplate = document.querySelector('#card-template').content;
     const card = cardTemplate.querySelector('.card').cloneNode(true);
@@ -34,7 +73,7 @@ export const createCard = (cardElement, params) => {
         }
     }
 
-    handleLiking(params.ownerId, cardLikeButton)
+    handleLiking(ownerId, cardLikeButton)
 
 
     //слушатель лайка
@@ -44,26 +83,14 @@ export const createCard = (cardElement, params) => {
     cardImage.addEventListener('click', () => params.increaseImage(cardImage, cardTitle));
     
     //удалить карточку
-
-    function handleDeleteCard (cardElement, ownerId, cardDeleteButton) {
-        if (cardElement.owner._id !== ownerId) {
-            cardDeleteButton.remove()
-        } else {
-            cardDeleteButton.addEventListener('click', () => {
-                params.deleteCard(cardElement._id)
-                .then ((data) => {
-                    console.log(data)
-                    params.removeCard(card)
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-            })
-        }
-    }
-    handleDeleteCard(cardElement, params.ownerId, cardDeleteButton)
+    if (cardElement.owner._id !== ownerId) {
+        cardDeleteButton.remove()
+    } else {
+        cardDeleteButton.addEventListener('click', () => {
+            handleDeleteCard(cardElement, removeCard, card)
+        })
+    }  
 
     return card;
-
 }
 

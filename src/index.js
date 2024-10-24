@@ -1,9 +1,9 @@
 import '/src/pages/index.css';
 
 import { openModal, closeModal, closeModalOverlay } from '/src/scripts/components/modal.js';
-import {createCard, likeCard, removeCard} from '/src/scripts/components/card.js';
+import {createCard, handleDeleteCard, handleLikeCard} from '/src/scripts/components/card.js';
 import {enableValidation, clearValidation} from '../src/scripts/components/validation.js'
-import {getUserName, getInitialCards, editUserProfile, postNewCard, putLike, deleteLike, deleteCard, changeAvatar } from '../src/scripts/components/api.js'
+import {getUserName, getInitialCards, editUserProfile, postNewCard, changeAvatar } from '../src/scripts/components/api.js'
 
 
 // @todo: DOM узлы
@@ -38,9 +38,19 @@ const validationConfig = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible',
 }
+//Айди владельца аккаунта
+let ownerId
 
+//объект параметров для createCard
+const params = { 
+    openModal: openModal,
+    closeModal: closeModal,
+    handleLikeCard: handleLikeCard,
+    increaseImage: increaseImage,
+    handleDeleteCard: handleDeleteCard
+}
 
-//загрузка
+//стилизация кнопок для пользователя "идёт загрузка"
 function renderLoading (isLoading) {
     if (isLoading) {
         buttons.forEach((buttonElement) => buttonElement.innerText = 'Загружается...')
@@ -50,39 +60,11 @@ function renderLoading (isLoading) {
     }
 }
 
-//общая функция лайка
-const handleLikeCard = (cardLikeButton, id, cardLikeCounter) => {
-    if (cardLikeButton.classList.contains('card__like-button_is-active')) {
-        deleteLike(id)
-        .then (data => {
-            //отображение лайков карточки
-            cardLikeCounter.textContent = data.likes.length
-            likeCard(cardLikeButton)
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-    } else {
-        putLike(id)
-        .then (data => {
-            //отображение лайков карточки
-            cardLikeCounter.textContent = data.likes.length
-            likeCard(cardLikeButton)
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-    }
-}
-
 //открытие попапа формы изменения профиля
 const openPopupProfileForm = () => {
     //изменине значения плейсхолдера в редактировании имени и инфы о себе
     nameInput.value = profileTitle.textContent;
     jobInput.value = profileDescription.textContent;
-    // включение валидации вызовом enableValidation
-    // все настройки передаются при вызове
-    enableValidation(validationConfig);
     clearValidation(editProfileForm, validationConfig)
     openModal(popupProfile)
 }
@@ -101,7 +83,6 @@ const handleProfileFormSubmit = (evt) => {
     .then((data) => {
         profileTitle.textContent = data.name;
         profileDescription.textContent = data.about;
-
         closeModal(popupProfile);
         editProfileForm.reset();
     })
@@ -122,16 +103,23 @@ const increaseImage = (image, text) => {
     openModal(popupTypeImage)
 }
 
-//объект параметров для createCard
-const params = {
-    removeCard: removeCard, 
-    deleteCard: deleteCard, 
-    ownerId: '1f9f7c9071d9a15cea3537ff', 
-    openModal: openModal,
-    closeModal: closeModal,
-    handleLikeCard: handleLikeCard,
-    increaseImage: increaseImage,
-}
+//вызов функции валидации всех форм
+enableValidation(validationConfig);
+
+//вывожу инфу о профиле и все карточки
+Promise.all([getUserName(), getInitialCards()])
+.then ((data) => {
+    profileTitle.textContent = data[0].name;
+    profileDescription.textContent = data[0].about;
+    profileImage.style = `background-image: url("${data[0].avatar}")`;
+    ownerId = data[0]._id;
+    return data[1].forEach ((cardElement) => {
+        placesList.append(createCard(cardElement, params, ownerId));
+    });
+})
+.catch ((err) => {
+    console.log(err);
+})
 
 //функция добавления карточки в разметку через попап
 const handleCardFormSubmit = (evt) => {
@@ -145,9 +133,11 @@ const handleCardFormSubmit = (evt) => {
 
     postNewCard(newPlaceCard)
     .then((data) => {
+        console.log(ownerId)
         placesList.prepend(createCard(
             data,
-            params
+            params,
+            ownerId
         ));
     })
     .then (() => {
@@ -160,20 +150,6 @@ const handleCardFormSubmit = (evt) => {
     })
     .finally (() => renderLoading(false))
 }
-
-//вывожу инфу о профиле и все карточки
-Promise.all([getUserName(), getInitialCards()])
-.then ((data) => {
-    profileTitle.textContent = data[0].name;
-    profileDescription.textContent = data[0].about;
-    profileImage.style = `background-image: url("${data[0].avatar}")`
-    return data[1].forEach ((cardElement) => {
-        placesList.append(createCard(cardElement, params));
-    });
-})
-.catch ((err) => {
-    console.log(err);
-})
 
 // Прикрепляем обработчик к форме: он будет следить за событием “submit” - «отправка»
 editProfileForm.addEventListener('submit', handleProfileFormSubmit); 
@@ -195,12 +171,10 @@ popups.forEach((element) => {
 editButton.addEventListener('click', openPopupProfileForm);
 profileAddButton.addEventListener('click', () => {
     openModal(popupNewCard);
-    enableValidation(validationConfig);
 });
 profileImage.addEventListener('click', () => {
     clearValidation(profileImageForm, validationConfig)
     openModal(avatarChangePopup);
-    enableValidation(validationConfig)
 })
 
 //изменение аватара
@@ -208,8 +182,9 @@ profileImageForm.addEventListener('submit', () => {
     renderLoading(true)
     changeAvatar(profileImageForm.image.value)
     .then (data => {
+        console.log(data);
         profileImage.style = `background-image: url("${data.avatar}")`;
-        closeModal(avatarChangePopup)
+        closeModal(avatarChangePopup);
         profileImageForm.reset();
     })
     .catch ((err) => {

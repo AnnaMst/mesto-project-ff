@@ -1,20 +1,26 @@
 const config = {
     baseUrl: 'https://nomoreparties.co/v1/wff-cohort-24/',
+    headers: {
+      authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
+      "Content-Type": 'application/json',
+    },
+};
+
+const handleResult = (res) => {
+    if (res.ok) {
+        return res.json();
+    }
+    return Promise.reject(`Ошибка: ${result.status}`)
 }
 
 //загрузка информации о пользователе с сервера
 export const getUserName = () => {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'GET',
-        headers: {
-            authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c'
-        }
+        headers: config.headers
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`)
+    .then( (result) => {
+        return handleResult(result)
     })
 } 
 
@@ -22,20 +28,14 @@ export const getUserName = () => {
 export const editUserProfile = (name, about) => {
     return fetch(`${config.baseUrl}/users/me`, {
         method:'PATCH',
-        headers: {
-            authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             name: name,
             about: about
         })
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-          }
-        return Promise.reject(`Ошибка: ${res.status}`)
+    .then( (result) => {
+        return handleResult(result)
     })
 }
 
@@ -43,16 +43,10 @@ export const editUserProfile = (name, about) => {
 export const getInitialCards = () => {
     return fetch(`${config.baseUrl}/cards`, {
         method: 'GET',
-        headers: {
-            authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-            'Content-Type': 'application/json'
-        }
+        headers: config.headers,
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-          }
-        return Promise.reject(`Ошибка: ${res.status}`)
+    .then( (result) => {
+        return handleResult(result)
     })
 }
 
@@ -60,20 +54,14 @@ export const getInitialCards = () => {
 export const postNewCard = ({name, link}) => {
     return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
-        headers: {
-            authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             name: name,
             link: link
         })
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-          }
-        return Promise.reject(`Ошибка: ${res.status}`)
+    .then( (result) => {
+        return handleResult(result)
     })
 }
 
@@ -81,16 +69,10 @@ export const postNewCard = ({name, link}) => {
 export const putLike = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
-        headers: {
-            authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers
     })
-    .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`)
+    .then( (result) => {
+        return handleResult(result)
     })
 }
 
@@ -98,16 +80,10 @@ export const putLike = (cardId) => {
 export const deleteLike = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
-        headers: {
-            authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка: ${res.status}`)
+    .then( (result) => {
+        return handleResult(result)
     })
 }
 
@@ -115,15 +91,10 @@ export const deleteLike = (cardId) => {
 export const deleteCard = (cardId) => {
     return fetch(`${config.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
-        headers: {
-            authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-        },
+        headers: config.headers,
     })
-    .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`)
+    .then( (result) => {
+        return handleResult(result)
     })
 }
 
@@ -131,18 +102,12 @@ export const deleteCard = (cardId) => {
 export const changeAvatar = (avatar) => {
     return fetch(`${config.baseUrl}/users/me/avatar `, {
         method: 'PATCH',
-        headers: {
-            authorization: 'c430b10e-6e02-4ef6-8316-b9743be3525c',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             avatar: avatar
         })
     })
-    .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`)
+    .then( (result) => {
+        return handleResult(result)
     })
 }
