@@ -41,14 +41,7 @@ const validationConfig = {
 //Айди владельца аккаунта
 let ownerId
 
-//объект параметров для createCard
-const params = { 
-    openModal: openModal,
-    closeModal: closeModal,
-    handleLikeCard: handleLikeCard,
-    increaseImage: increaseImage,
-    handleDeleteCard: handleDeleteCard
-}
+
 
 //стилизация кнопок для пользователя "идёт загрузка"
 function renderLoading (isLoading) {
@@ -101,6 +94,15 @@ const increaseImage = (image, text) => {
     popupImageText.textContent = text.textContent;
 
     openModal(popupTypeImage)
+}
+
+//объект параметров для createCard
+const params = { 
+    openModal: openModal,
+    closeModal: closeModal,
+    handleLikeCard: handleLikeCard,
+    increaseImage: increaseImage,
+    handleDeleteCard: handleDeleteCard
 }
 
 //вызов функции валидации всех форм
